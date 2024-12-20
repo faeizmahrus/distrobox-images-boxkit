@@ -1,23 +1,29 @@
-name: build-boxkit
+name: boxkit-build
 on:
-  pull_request:
-    branches:
-      - main
   schedule:
-    - cron: '0 0 * * TUE'
+    - cron:
+        "00 06 * * TUE" # build at 06:00 UTC every day
+        # (20 minutes after last ublue images start building)
   push:
-    branches:
-      - main
-    paths-ignore:
-      - '**/README.md'
+    paths-ignore: # don't rebuild if only documentation has changed
+      - "**.md"
+
+  pull_request:
+  workflow_dispatch: # allow manually triggering builds
+
+concurrency:
+  # only run one build at a time
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
     IMAGE_NAME: boxkit
     IMAGE_TAGS: latest
     IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
 jobs:
-  push-ghcr:
-    name: Build and push image
+  build-and-push:
+    name: Build and Push Images
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -25,42 +31,44 @@ jobs:
       id-token: write
     strategy:
       fail-fast: false
-    steps: 
-      # Checkout push-to-registry action GitHub repository
-      - name: Checkout Push to Registry action
+      matrix:
+        containerfile: 
+          - appbox-arch
+          - devbox-arch
+          - winebox-arch
+    steps:
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        
-      # Build metadata
+
       - name: Image Metadata
         uses: docker/metadata-action@v5
         id: meta
         with:
           images: |
-            ${{ env.IMAGE_NAME }}
+            ${{ matrix.containerfile }}
+           # Edit later
           labels: |
-            io.artifacthub.package.readme-url=https://raw.githubusercontent.com/ublue-os/boxkit/main/README.md
+            io.artifacthub.package.readme-url=https://raw.githubusercontent.com/faeizmahrus/distrobox-images-boxkit/refs/heads/main/README.md 
 
-      # Build image using Buildah action
+            
       - name: Build Image
         id: build_image
         uses: redhat-actions/buildah-build@v2
         with:
+            # Needs to have each containerfile in a separate newline
           containerfiles: |
-            ./Containerfile
-          image: ${{ env.IMAGE_NAME }}
+            ./ContainerFiles/${{ matrix.containerfile }}
+          image: ${{ matrix.containerfile }}
           tags: ${{ env.IMAGE_TAGS }}
           labels: ${{ steps.meta.outputs.labels }}
-          oci: false
-          
-      # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
-      # https://github.com/macbre/push-to-ghcr/issues/12
+          oci: true
+
       - name: Lowercase Registry
         id: registry_case
         uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ env.IMAGE_REGISTRY }}
 
-      # Push the image to GHCR (Image Registry)
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         id: push
@@ -75,26 +83,23 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
           extra-args: |
             --disable-content-trust
-            
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-            
-      # Sign container
-      - uses: sigstore/cosign-installer@v3.7.0
 
-      - name: Sign container image
+      - name: Sign Container Image
         if: github.event_name != 'pull_request'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}@${TAGS}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ matrix.containerfile }}@${TAGS}
         env:
           TAGS: ${{ steps.push.outputs.digest }}
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
 
-      - name: Echo outputs
+      - name: Echo Outputs
         run: |
           echo "${{ toJSON(steps.push.outputs) }}"
