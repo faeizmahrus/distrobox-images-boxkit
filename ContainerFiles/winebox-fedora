@@ -1,0 +1,8 @@
+FROM ghcr.io/ublue-os/arch-distrobox
+
+LABEL com.github.containers.toolbox="true" \
+      usage="This image is meant to be used with the distrobox command" \
+      summary="Distrobox image with `winehq-staging` preinstalled from the official WineHQ repos for Fedora." \
+      maintainer="faeizmahrus@outlook.com"
+
+COPY 
