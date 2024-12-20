@@ -8,4 +8,4 @@ paru -Syu rustup rust-analyzer
 paru -Syu base-devel meson ninja clang
 
 # Install and default to the rust stable toolchain
-rustup toolchain install stable && rustup default stable
+/usr/bin/rustup toolchain install stable && /usr/bin/rustup default stable

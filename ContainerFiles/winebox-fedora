@@ -1,8 +1,13 @@
-FROM ghcr.io/ublue-os/arch-distrobox
+# Select image to build off of
+FROM ghcr.io/ublue-os/fedora-toolbox:41
 
+# Metadata stuff
 LABEL com.github.containers.toolbox="true" \
       usage="This image is meant to be used with the distrobox command" \
-      summary="Distrobox image with `winehq-staging` preinstalled from the official WineHQ repos for Fedora." \
+      summary="A distrobox image with `winehq-staging` preinstalled from the official WineHQ repos for Fedora." \
       maintainer="faeizmahrus@outlook.com"
 
-COPY 
+# Run setup script
+COPY ../scripts/winebox-fedora.sh /
+RUN chmod +x /winebox-fedora.sh && /winebox-fedora.sh
+RUN rm /winebox-fedora.sh
