@@ -17,7 +17,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-    IMAGE_NAME: boxkit
     IMAGE_TAGS: latest
     IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
 
@@ -31,11 +30,12 @@ jobs:
       id-token: write
     strategy:
       fail-fast: false
+      # Add Containerfiles here
       matrix:
         containerfile: 
           - appbox-arch
           - devbox-arch
-          - winebox-arch
+          - winebox-fedora
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -46,7 +46,6 @@ jobs:
         with:
           images: |
             ${{ matrix.containerfile }}
-           # Edit later
           labels: |
             io.artifacthub.package.readme-url=https://raw.githubusercontent.com/faeizmahrus/distrobox-images-boxkit/refs/heads/main/README.md 
 
@@ -81,8 +80,8 @@ jobs:
           registry: ${{ steps.registry_case.outputs.lowercase }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
-          extra-args: |
-            --disable-content-trust
+          #extra-args: |
+          #  --disable-content-trust
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
