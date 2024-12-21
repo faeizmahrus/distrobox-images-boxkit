@@ -23,7 +23,7 @@ env:
 jobs:
   build-and-push:
     name: Build and Push Images
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -89,6 +89,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.7.0
+      - name: Check cosign install
+        run: cosign version
 
       - name: Sign Container Image
         if: github.event_name != 'pull_request'
