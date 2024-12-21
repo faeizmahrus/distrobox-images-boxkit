@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # Install VSCode, git
-paru -Syu visual-studio-code-bin git
+paru -Syu --skip-review visual-studio-code-bin git
 # Install rustup and rust-analyzer
-paru -Syu rustup rust-analyzer
+paru -Syu --skip-review rustup rust-analyzer
 # Install C/C++ stuff
-paru -Syu base-devel meson ninja clang
+paru -Syu --skip-review base-devel meson ninja clang
 
 # Install and default to the rust stable toolchain
-/usr/bin/rustup toolchain install stable && /usr/bin/rustup default stable
+rustup toolchain install stable && rustup default stable
