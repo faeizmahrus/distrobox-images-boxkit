@@ -1,5 +1,5 @@
 # Select image to build off of
-FROM ghcr.io/ublue-os/fedora-toolbox:41
+FROM ghcr.io/ublue-os/fedora-toolbox
 
 # Metadata stuff
 LABEL com.github.containers.toolbox="true" \
