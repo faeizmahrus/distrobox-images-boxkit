@@ -33,8 +33,6 @@ jobs:
       # Add Containerfiles here
       matrix:
         containerfile: 
-          - appbox-arch
-          - devbox-arch
           - winebox-fedora
     steps:
       - name: Checkout Repository
