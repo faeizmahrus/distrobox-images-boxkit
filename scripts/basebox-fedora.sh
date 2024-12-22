@@ -9,7 +9,8 @@ echo "timeout = 5" >> /etc/dnf/dnf.conf
 dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 dnf install -y rpmfusion-free-release-tainted rpmfusion-nonfree-release-tainted
 dnf config-manager setopt fedora-cisco-openh264.enabled=1
-dnf install -y ffmpeg intel-media-driver libva-intel-driver \
-    mesa-va-drivers-freeworld mesa-vdpau-drivers-freeworld
+dnf install -y ffmpeg intel-media-driver libva-intel-driver
+dnf swap -y mesa-va-drivers mesa-va-drivers-freeworld
+dnf swap -y mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
 
 
