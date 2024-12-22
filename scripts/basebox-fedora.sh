@@ -12,5 +12,3 @@ dnf config-manager setopt fedora-cisco-openh264.enabled=1
 dnf install -y ffmpeg intel-media-driver libva-intel-driver
 dnf swap -y mesa-va-drivers mesa-va-drivers-freeworld
 dnf swap -y mesa-vdpau-drivers mesa-vdpau-drivers-freeworld
-
-
