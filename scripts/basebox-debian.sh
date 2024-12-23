@@ -2,6 +2,7 @@
 
 # Update debian
 apt update -y && apt upgrade -y
+apt install -y wget curl
 
 # Add Zotero and Brave repos
 wget -qO- https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | bash
