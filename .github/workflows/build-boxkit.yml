@@ -61,7 +61,7 @@ jobs:
           image: ${{ matrix.containerfile }}
           tags: ${{ env.IMAGE_TAGS }}
           labels: ${{ steps.meta.outputs.labels }}
-          oci: true
+          oci: false
 
       - name: Lowercase Registry
         id: registry_case
