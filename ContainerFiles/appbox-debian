@@ -1,5 +1,5 @@
 # Select image to build off of
-FROM quay.io/faeizmahrus/appbox-debian
+FROM ghcr.io/faeizmahrus/appbox-debian
 
 # Metadata stuff
 LABEL com.github.containers.toolbox="true" \

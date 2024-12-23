@@ -1,5 +1,5 @@
 # Select image to build off of
-FROM quay.io/faeizmahrus/basebox-fedora
+FROM ghcr.io/faeizmahrus/basebox-fedora
 
 # Metadata stuff
 LABEL com.github.containers.toolbox="true" \
