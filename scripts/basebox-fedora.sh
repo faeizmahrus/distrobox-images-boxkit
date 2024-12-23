@@ -6,6 +6,7 @@ echo "minrate = 262144" >> /etc/dnf/dnf.conf
 echo "timeout = 5" >> /etc/dnf/dnf.conf
 
 # Install RPMFusion stuff
+dnf update -y
 dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 dnf install -y rpmfusion-free-release-tainted rpmfusion-nonfree-release-tainted
 dnf config-manager setopt fedora-cisco-openh264.enabled=1
