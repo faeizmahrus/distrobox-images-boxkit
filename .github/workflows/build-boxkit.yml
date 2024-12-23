@@ -89,12 +89,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install cosign
-        uses: sigstore/cosign-installer@v3.7.0
-      - name: Check cosign install
-        run: cosign version
-
       - name: Sign Container Image
+        uses: sigstore/cosign-installer@v3.7.0
         if: github.event_name != 'pull_request'
         run: |
           cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ steps.registry_case.outputs.lowercase }}/${{ matrix.containerfile }}@${TAGS}
